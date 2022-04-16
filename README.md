@@ -100,5 +100,4 @@ BiliWiki原神武器图鉴：https://wiki.biligame.com/ys/%E6%AD%A6%E5%99%A8%E5%
 1.将项目转为纯前端
 2.显示抽到角色/武器的详细信息
 ...
-#### 基于米哈游官方抽卡数据API打造
 #### Powered by 0803QwQ, Thanks for Your Using.
