@@ -93,10 +93,10 @@ items.json文件是设置抽卡内容的文件，您可以查看 [如何使用it
 注：您可以直接从 [限定五星数据一览.txt](https://github.com/0803QwQ/gitool-gacha-simulator/blob/main/限定五星数据一览.txt) 复制所需五星物品的部分到items.json的相应位置来使用
 ### items.json的数据来源
 通过解析以下地址的HTML文档获得：
-BiliWiki原神角色筛选：https://wiki.biligame.com/ys/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89
+BiliWiki原神角色筛选：https://wiki.biligame.com/ys/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89<br>
 BiliWiki原神武器图鉴：https://wiki.biligame.com/ys/%E6%AD%A6%E5%99%A8%E5%9B%BE%E9%89%B4
 ## Todo（画饼）
-1.完善武器池保底机制（定轨机制）
+1.完善武器池保底机制（定轨机制）<br>
 2.显示抽到角色/武器的详细信息
 ...
 #### 基于米哈游官方抽卡数据API打造
