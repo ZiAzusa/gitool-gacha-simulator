@@ -5,17 +5,17 @@ if ($_POST['askup'] != array()){
     $arrayName = "now-".$_POST['poolname'];
     $r5up = $itemsArr['r5'][$arrayName];
     if (count($r5up) != 10 || count($r5up) != 13){
-        foreach ($r5up as $r5k => $r5v) $r5upText .= $r5v[1]." ";
+        foreach ($r5up as $r5k => $r5v) $r5upArr[] = $r5v[1];
     }else{
-        $r5upText = $r5up[1];
+        $r5upArr[] = $r5up[1];
     };
     $r4up = $itemsArr['r4'][$arrayName];
     if (count($r4up) != 10 || count($r4up) != 13){
-        foreach ($r4up as $r4k => $r4v) $r4upText .= $r4v[1]." ";
+        foreach ($r4up as $r4k => $r4v) $r4upArr[] = $r4v[1];
     }else{
-        $r4upText = $r4up[1];
+        $r4upArr[] = $r4up[1];
     };
-    print_r(json_encode(['upr5' => $r5upText, 'upr4' => $r4upText]));
+    print_r(json_encode(['upr5' => $r5upArr, 'upr4' => $r4upArr]));
     exit;
 };
 $info = $_POST['gachalog'][$_POST['poolname']];
@@ -45,7 +45,13 @@ if ($seed <= $r5per || $count == $flootnum){
             foreach ($itemsArr['r5']['always-chr'] as $ar5v) $ar5[] = $ar5v[1];
             if (($chrseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-chr'] != array()){
                 if (is_array($itemsArr['r5']['now-chr'])){
-                    $result = $itemsArr['r5']['now-chr'][array_rand($itemsArr['r5']['now-chr'])];
+                    if ($info['choice'] == ""){
+                        $result = $itemsArr['r5']['now-chr'][array_rand($itemsArr['r5']['now-chr'])];
+                    }else{
+                        foreach ($itemsArr['r5']['now-chr'] as $r5ncv){
+                            if ($r5ncv[1] = $info['choice']) $result = $r5ncv;
+                        }
+                    }
                 }else{
                     $result = $itemsArr['r5']['now-chr'];
                 };
@@ -56,9 +62,15 @@ if ($seed <= $r5per || $count == $flootnum){
         case 'arm':
             $armseed = mt_rand(1, 1000000);
             foreach ($itemsArr['r5']['always-arm'] as $ar5v) $ar5[] = $ar5v[1];
-            if (($armseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-arm'] != array()){
+            if (($armseed <= 500000 || $info['r5times'] == 2) && $itemsArr['r5']['now-arm'] != array()){
                 if (is_array($itemsArr['r5']['now-arm'])){
-                    $result = $itemsArr['r5']['now-arm'][array_rand($itemsArr['r5']['now-arm'])];
+                    if ($info['choice'] == "" || $info['r5times'] != 2){
+                        $result = $itemsArr['r5']['now-arm'][array_rand($itemsArr['r5']['now-arm'])];
+                    }else{
+                        foreach ($itemsArr['r5']['now-arm'] as $r5nav){
+                            if ($r5nav[1] = $info['choice']) $result = $r5nav;
+                        }
+                    }
                 }else{
                     $result = $itemsArr['r5']['now-arm'];
                 };
