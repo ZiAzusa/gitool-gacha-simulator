@@ -48,7 +48,7 @@ function pool(id) {
         arm.style.display = "none";
     }
     show(showid);
-    $().setValue(id);
+    $().setValue(id, "with");
 }
 function show(id) {
     show1 = document.getElementById("show1");
@@ -90,6 +90,28 @@ function show(id) {
         r5.style.display = "none";
     }
 }
+function setpool(name) {
+    undo = document.getElementById("undo");
+    if (chr.style.display == "block") {
+        $().choice(name, 'chr');
+    } else if (arm.style.display == "block") {
+        $().choice(name, 'arm');
+        document.getElementById("upr5note").style.display = "inline";
+    }
+    undo.style.display = "inline";
+    undo.setAttribute("onclick", "undopool('" + name + "');");
+}
+function undopool(name) {
+    undo = document.getElementById("undo");
+    if (chr.style.display == "block") {
+        $().choice("", 'chr');
+    } else if (arm.style.display == "block") {
+        $().choice("", 'arm');
+        document.getElementById("upr5note").style.display = "none";
+    }
+    undo.style.display = "none";
+    document.getElementById(name + "radio").checked = false;
+}
 $(function() {
     var CR5num = 0;
     var CR4num = 0;
@@ -104,8 +126,14 @@ $(function() {
     for (var key in gachalog) {
         gachalog[key]['c'] = 0;
         gachalog[key]['r5c'] = 0;
+        gachalog[key]['choice'] = "";
     }
-    $.fn.setValue = function(id) {
+    gachalog['chr']['lastr5'] = "";
+    gachalog['arm']['r5times'] = 0;
+    var htmlSave = {};
+    htmlSave['chr'] = "";
+    htmlSave['arm'] = "";
+    $.fn.setValue = function(id, option) {
         if (id == 1) {
             poolname = 'chr';
             flootnum = 90;
@@ -136,25 +164,74 @@ $(function() {
             postdata['askup'] = true;
             postdata['poolname'] = poolname;
             $("[name='up']").css('display', 'block');
-            $.ajax({
-                type: "post",
-                url: "api.php",
-                data: postdata,
-                dataType: 'json',
-                success: function(rs) {
-                    if (rs.upr5 == null) {
-                        rs.upr5 = "无UP";
-                    }
-                    if (rs.upr4 == null) {
-                        rs.upr4 = "无UP";
-                    }
-                    $("[name='upr5']").html(rs.upr5);
-                    $("[name='upr4']").html(rs.upr4);
-                }
-            });
+            if (option != "without") {
+                showUp(postdata, poolname);
+            }
         } else {
             $("[name='up']").css('display', 'none');
         }
+    }
+    $.fn.choice = function(name, poolname) {
+        if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
+            gachalog['arm']['c'] = 0;
+            gachalog['arm']['r5c'] = 0;
+            gachalog['arm']['r5times'] = 0;
+            AR5num = 0;
+            AR4num = 0;
+            $("#AAtbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR5tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR4tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $.fn.setValue(2, "without");
+        }
+        gachalog[poolname]['choice'] = name;
+        htmlSave[poolname] = $("[name='up']").html;
+        if (name = "") {
+            htmlSave[poolname] = "";
+        }
+    }
+    async function showUp(postdata, poolname) {
+        if (htmlSave[poolname] != "") {
+            $("[name='up']") = htmlSave[poolname];
+            return;
+        }
+        await $.ajax({
+            type: "post",
+            url: "api.php",
+            data: postdata,
+            dataType: 'json',
+            success: function(rs) {
+                var upr5text = "";
+                var upr4text = "";
+                for (var r5id in rs.upr5) {
+                    if (rs.upr5.length > 1) {
+                        upr5tag = "<input type='radio' id='" + rs.upr5[r5id] + "radio' name='choice' onclick=\"setpool('" + rs.upr5[r5id] + "');\"> ";
+                    } else {
+                        upr5tag = "";
+                    }
+                    upr5text = upr5text + upr5tag + rs.upr5[r5id] + " ";
+                    gachalog[poolname]['upr5'] = rs.upr5;
+                }
+                for (var r4id in rs.upr4) {
+                    upr4text = upr4text + rs.upr4[r4id] + " ";
+                    gachalog[poolname]['upr4'] = rs.upr4;
+                }
+                if (rs.upr5.length > 1) {
+                    if (poolname == 'chr') {
+                        upr5text = "(点击单选框选择角色)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button>";
+                    } else if (poolname == 'arm') {
+                        upr5text = "(点击单选框设置定轨)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button><span id='upr5note' style='display:none;color:#FF0000'><br>警告：撤销或修改定轨后会重置记录!</span>";
+                    }
+                }
+                $("[name='upr5']").html(upr5text);
+                $("[name='upr4']").html(upr4text);
+                if (rs.upr5 == null) {
+                    $("[name='upr5']").html("无UP");
+                }
+                if (rs.upr4 == null) {
+                    $("[name='upr4']").html("无UP");
+                }
+            }
+        });
     }
     async function gacha(poolname, times) {
         var postdata = {};
@@ -200,7 +277,11 @@ $(function() {
                             CR5num = CR5num + 1;
                         } else if ($('#arm').css("display") == "block") {
                             gachalog['arm']['r5c'] = gachalog['arm']['c'];
-                            gachalog['arm']['lastr5'] = rs.name;
+                            if (rs.name == gachalog['arm']['choice'] || gachalog['arm']['choice'] == "") {
+                                gachalog['arm']['r5times'] = 0;
+                            } else {
+                                gachalog['arm']['r5times'] = gachalog['arm']['r5times'] + 1;
+                            }
                             AR5num = AR5num + 1;
                         } else if ($('#nov').css("display") == "block") {
                             gachalog['nov']['r5c'] = gachalog['nov']['c'];
@@ -216,7 +297,7 @@ $(function() {
                             NR4num = NR4num + 1;
                         }
                     }
-                    $.fn.setValue(id);
+                    $.fn.setValue(id, "without");
                     i++;
                 }
             });
