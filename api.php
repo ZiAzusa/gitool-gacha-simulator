@@ -1,7 +1,7 @@
 <?php
 $items = file_get_contents("items.json");
 $itemsArr = json_decode($items, true);
-if ($_POST['askup'] != null){
+if ($_POST['askup'] != array()){
     $arrayName = "now-".$_POST['poolname'];
     $r5up = $itemsArr['r5'][$arrayName];
     if (count($r5up) != 10 || count($r5up) != 13){
@@ -35,12 +35,15 @@ $r5per = 6000;
 $r4per = 51000;
 if ($count >= 70) $r5per += ($count - 70) * $pluscell;
 $seed = mt_rand(1, 1000000);
+if ($count == 1 && $info['r5c'] != 0 && ($info['r5c'] % 10) == 0 && $seed >= $r5per){
+    $seed = 500000;
+};
 if ($seed <= $r5per || $count == $flootnum){
     switch ($_POST['poolname']) {
         case 'chr':
             $chrseed = mt_rand(1, 1000000);
             foreach ($itemsArr['r5']['always-chr'] as $ar5v) $ar5[] = $ar5v[1];
-            if (($chrseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-chr'] != null){
+            if (($chrseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-chr'] != array()){
                 if (is_array($itemsArr['r5']['now-chr'])){
                     $result = $itemsArr['r5']['now-chr'][array_rand($itemsArr['r5']['now-chr'])];
                 }else{
@@ -53,7 +56,7 @@ if ($seed <= $r5per || $count == $flootnum){
         case 'arm':
             $armseed = mt_rand(1, 1000000);
             foreach ($itemsArr['r5']['always-arm'] as $ar5v) $ar5[] = $ar5v[1];
-            if (($armseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-arm'] != null){
+            if (($armseed <= 500000 || in_array($info['lastr5'], $ar5v)) && $itemsArr['r5']['now-arm'] != array()){
                 if (is_array($itemsArr['r5']['now-arm'])){
                     $result = $itemsArr['r5']['now-arm'][array_rand($itemsArr['r5']['now-arm'])];
                 }else{
@@ -72,7 +75,7 @@ if ($seed <= $r5per || $count == $flootnum){
     switch ($_POST['poolname']) {
         case 'chr':
             $chrseed = mt_rand(1, 1000000);
-            if ($chrseed <= 500000 && $itemsArr['r4']['now-chr'] != null){
+            if ($chrseed <= 500000 && $itemsArr['r4']['now-chr'] != array()){
                 $result = $itemsArr['r4']['now-chr'][array_rand($itemsArr['r4']['now-chr'])];
             }else{
                 $result = $itemsArr['r4']['always'][array_rand($itemsArr['r4']['always'])];
@@ -80,7 +83,7 @@ if ($seed <= $r5per || $count == $flootnum){
             break;
         case 'arm':
             $armseed = mt_rand(1, 1000000);
-            if ($armseed <= 500000 || $itemsArr['r4']['now-arm'] != null){
+            if ($armseed <= 500000 && $itemsArr['r4']['now-arm'] != array()){
                 $result = $itemsArr['r4']['now-arm'][array_rand($itemsArr['r4']['now-arm'])];
             }else{
                 $result = $itemsArr['r4']['always'][array_rand($itemsArr['r4']['always'])];
