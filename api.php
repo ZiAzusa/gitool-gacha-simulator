@@ -1,23 +1,6 @@
 <?php
 $items = file_get_contents("items.json");
 $itemsArr = json_decode($items, true);
-if ($_POST['askup'] != array()){
-    $arrayName = "now-".$_POST['poolname'];
-    $r5up = $itemsArr['r5'][$arrayName];
-    if (count($r5up) != 10 || count($r5up) != 13){
-        foreach ($r5up as $r5k => $r5v) $r5upArr[] = $r5v[1];
-    }else{
-        $r5upArr[] = $r5up[1];
-    };
-    $r4up = $itemsArr['r4'][$arrayName];
-    if (count($r4up) != 10 || count($r4up) != 13){
-        foreach ($r4up as $r4k => $r4v) $r4upArr[] = $r4v[1];
-    }else{
-        $r4upArr[] = $r4up[1];
-    };
-    print_r(json_encode(['upr5' => $r5upArr, 'upr4' => $r4upArr]));
-    exit;
-};
 $info = $_POST['gachalog'][$_POST['poolname']];
 switch ($_POST['poolname']){
     case 'arm':
