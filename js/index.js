@@ -224,7 +224,9 @@ $(function() {
         $('#loading').css('display', 'none');
     }
     $("button[name=only]").on('click', function() {
-        if ($('#chr').css("display") == "block") {
+        if ($('#loading').css("display") == "block") {
+            return;
+        } else if ($('#chr').css("display") == "block") {
             poolname = 'chr';
         } else if ($('#arm').css("display") == "block") {
             poolname = 'arm';
@@ -234,7 +236,9 @@ $(function() {
         gacha(poolname, 1);
     });
     $("button[name=ten]").on('click', function() {
-        if ($('#chr').css("display") == "block") {
+        if ($('#loading').css("display") == "block") {
+            return;
+        }else if ($('#chr').css("display") == "block") {
             poolname = 'chr';
         } else if ($('#arm').css("display") == "block") {
             poolname = 'arm';
