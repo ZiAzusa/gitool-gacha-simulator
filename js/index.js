@@ -133,6 +133,38 @@ $(function() {
     var htmlSave = {};
     htmlSave['chr'] = "";
     htmlSave['arm'] = "";
+    function askup(poolname) {
+        let rs = $.ajax({
+            type: "get",
+            url: "items.json",
+            async: false,
+            dataType: 'json'
+        });
+        var items = rs.responseJSON;
+        arrayname = "now-" + poolname;
+        r5up = items.r5[arrayname];
+        var r5upArr = [];
+        if (r5up.length != 10 || r5up.length != 13) {
+            for (var r5k in r5up) {
+                r5upArr.push(r5up[r5k][1]);
+            }
+        } else {
+            r5upArr.push(r5up[1]);
+        }
+        r4up = items.r4[arrayname];
+        var r4upArr = [];
+        if (r4up.length != 10 || r4up.length != 13) {
+            for (var r4k in r4up) {
+                r4upArr.push(r4up[r4k][1]);
+            }
+        } else {
+            r4upArr.push(r4up[1]);
+        }
+        var result = [];
+        result.upr5 = r5upArr;
+        result.upr4 = r4upArr;
+        return(result);
+    }
     $.fn.setValue = function(id, option) {
         if (id == 1) {
             poolname = 'chr';
@@ -160,46 +192,13 @@ $(function() {
         $("[name='r5per']").html((R5num / gachalog[poolname]['c'] * 100).toFixed(2));
         $("[name='floot']").html(flootnum - (gachalog[poolname]['c'] - gachalog[poolname]['r5c']));
         if (id != 3) {
-            var postdata = {};
-            postdata['askup'] = true;
-            postdata['poolname'] = poolname;
             $("[name='up']").css('display', 'block');
             if (option != "without") {
-                showUp(postdata, poolname);
-            }
-        } else {
-            $("[name='up']").css('display', 'none');
-        }
-    }
-    $.fn.choice = function(name, poolname) {
-        if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
-            gachalog['arm']['c'] = 0;
-            gachalog['arm']['r5c'] = 0;
-            gachalog['arm']['r5times'] = 0;
-            AR5num = 0;
-            AR4num = 0;
-            $("#AAtbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $("#AR5tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $("#AR4tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $.fn.setValue(2, "without");
-        }
-        gachalog[poolname]['choice'] = name;
-        htmlSave[poolname] = $("[name='up']").html;
-        if (name = "") {
-            htmlSave[poolname] = "";
-        }
-    }
-    async function showUp(postdata, poolname) {
-        if (htmlSave[poolname] != "") {
-            $("[name='up']") = htmlSave[poolname];
-            return;
-        }
-        await $.ajax({
-            type: "post",
-            url: "api.php",
-            data: postdata,
-            dataType: 'json',
-            success: function(rs) {
+                if (htmlSave[poolname] != "") {
+                    $("[name='up']") = htmlSave[poolname];
+                    return;
+                }
+                rs = askup(poolname);
                 var upr5text = "";
                 var upr4text = "";
                 for (var r5id in rs.upr5) {
@@ -231,7 +230,27 @@ $(function() {
                     $("[name='upr4']").html("无UP");
                 }
             }
-        });
+        } else {
+            $("[name='up']").css('display', 'none');
+        }
+    }
+    $.fn.choice = function(name, poolname) {
+        if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
+            gachalog['arm']['c'] = 0;
+            gachalog['arm']['r5c'] = 0;
+            gachalog['arm']['r5times'] = 0;
+            AR5num = 0;
+            AR4num = 0;
+            $("#AAtbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR5tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR4tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $.fn.setValue(2, "without");
+        }
+        gachalog[poolname]['choice'] = name;
+        htmlSave[poolname] = $("[name='up']").html;
+        if (name = "") {
+            htmlSave[poolname] = "";
+        }
     }
     async function gacha(poolname, times) {
         var postdata = {};
