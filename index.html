@@ -1,0 +1,156 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name='viewport' content='width=device-width,maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'>
+    <title>原神抽卡模拟器 (Dev)</title>
+    <link href='icon.ico' rel='icon' type='image/x-icon' />
+    <link href='css/index.css' rel='stylesheet' type='text/css' />
+    <link href="css/icons.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body onload="start();">
+    <div id='overlay' class='overlay'>
+        <div class='text-bg'>
+            <h3>原神抽卡模拟器 (Dev)</h3>
+            <a href="JavaScript:pool(1);"><button id="pool1" name="pool">角色池</button></a>
+            <a href="JavaScript:pool(2);"><button id="pool2" name="pool" style="border-width:2px;background:rgba(255,255,255,0.8);color:#FFB31E">武器池</button></a>
+            <a href="JavaScript:pool(3);"><button id="pool3" name="pool" style="border-width:2px;background:rgba(255,255,255,0.8);color:#FFB31E">常驻池</button></a><br>
+            <button id="gacha" name="only">单抽</button>
+            <button id="gacha" name="ten">十连</button><br>
+            <a href="JavaScript:show(1);"><button id="show1" name="show">全部</button></a>
+            <a href="JavaScript:show(2);"><button id="show2" name="show" style="border-width:2px;background:rgba(255,255,255,0.8);color:#32EB00">仅看5星</button></a>
+            <a href="JavaScript:show(3);"><button id="show3" name="show" style="border-width:2px;background:rgba(255,255,255,0.8);color:#32EB00">仅看4星</button></a><br>
+            <div class='notice'>
+                <p>
+                    抽卡次数：<span name="times">0</span>抽&nbsp;
+                    消耗原石：<span name="spend">0</span>枚<br>
+                    出货数据：<br>
+                    3星：<span name="r3num">0</span>个 (<span name="r3per">NaN</span>%)<br>
+                    4星：<span name="r4num">0</span>个 (<span name="r4per">NaN</span>%)<br>
+                    5星：<span name="r5num">0</span>个 (<span name="r5per">NaN</span>%)<br>
+                    距离保底还有 <span name="floot">90</span> 抽<br>
+                    <span name="up">
+                        当期5星UP：<span name="upr5">无UP</span><br>
+                        当期4星UP：<span name="upr4">无UP</span>
+                    </span>
+                </p>
+            </div>
+            <div class='notice'>
+                <h4>抽卡记录：</h4>
+                <span id="chr" style="display:block">
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Call-table" style="display:block">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="CAtbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Cr5-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="CR5tbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Cr4-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="CR4tbMain"></tbody>
+                    </table>
+                </span>
+                <span id="arm" style="display:none">
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Aall-table" style="display:block">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="AAtbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Ar5-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="AR5tbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Ar4-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="AR4tbMain"></tbody>
+                    </table>
+                </span>
+                <span id="nov" style="display:none">
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Nall-table" style="display:block">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="NAtbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Nr5-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="NR5tbMain"></tbody>
+                    </table>
+                    <table bordercolor='black' cellspacing='0' cellpadding='5' id="Nr4-table" style="display:none">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>稀有度</th>
+                                <th>预览&名称</th>
+                            </tr> 
+                        </thead>
+                        <tbody id="NR4tbMain"></tbody>
+                    </table>
+                </span>
+                </div>
+        </div>
+    </div>
+    <table cellspacing='0' cellpadding='5' id="loading" style="display:none">
+        <tbody>
+            <tr>
+                <td><div id="loading-animate"><i class="bx bx-loader-alt" style="font-size:50px"></i></div></td>
+            </tr>
+            <tr>
+                <td><p>Loading...</p></td>
+            </tr>
+        </tbody>
+    </table>
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <!--<footer id="footer">
+        <ul class="copyright">
+            <p>2022 &copy; Powered by 0803QwQ</p>
+        </ul>
+    </footer>-->
+</body>
+</html>
