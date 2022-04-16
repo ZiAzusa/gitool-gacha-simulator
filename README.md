@@ -97,8 +97,7 @@ items.json文件是设置抽卡内容的文件，您可以查看 [如何使用it
 BiliWiki原神角色筛选：https://wiki.biligame.com/ys/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89<br>
 BiliWiki原神武器图鉴：https://wiki.biligame.com/ys/%E6%AD%A6%E5%99%A8%E5%9B%BE%E9%89%B4
 ## Todo（画饼）
-1.完善武器池保底机制（定轨机制）<br>
-2.显示抽到角色/武器的详细信息
+显示抽到角色/武器的详细信息
 ...
 #### 基于米哈游官方抽卡数据API打造
 #### Powered by 0803QwQ, Thanks for Your Using.
