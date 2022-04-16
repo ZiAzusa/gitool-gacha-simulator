@@ -1,9 +1,6 @@
 var chr = document.getElementById("chr");
 var arm = document.getElementById("arm");
 var nov = document.getElementById("nov");
-function start() {
-    $().setValue(1);
-}
 function pool(id) {
     pool1 = document.getElementById("pool1");
     pool2 = document.getElementById("pool2");
