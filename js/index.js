@@ -161,11 +161,11 @@ $(function() {
     }
     async function gacha(poolname, times) {
         var postdata = {};
-        postdata['gachalog'] = gachalog;
         postdata['poolname'] = poolname;
         $('#loading').css('display', 'block');
         i = 1;
         while (i <= times) {
+            postdata['gachalog'] = gachalog;
             await $.ajax({
                 type: "post",
                 url: "api.php",
