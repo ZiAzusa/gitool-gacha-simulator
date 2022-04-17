@@ -129,9 +129,6 @@ $(function() {
         gachalog[key]['choice'] = "";
         gachalog[key]['r5times'] = 0;
     }
-    var htmlSave = {};
-    htmlSave['chr'] = "";
-    htmlSave['arm'] = "";
     var itemsdata = $.ajax({
         type: "get",
         url: "items.json",
@@ -229,7 +226,6 @@ $(function() {
                     crs = items.r4['always'][Math.floor(Math.random() * items.r4['always'].length)];
                 }
             } else if (poolname == 'arm') {
-                 console.log(items.r4['now-arm']);
                 if (cseed <= 0.5 && items.r4['now-arm'].length != 0) {
                     crs = items.r4['now-arm'][Math.floor(Math.random() * items.r4['now-arm'].length)];
                 } else {
@@ -251,96 +247,6 @@ $(function() {
         result.img = "<div><img src=\"" + crs[0] + "\" style='hight:40px;width:40px' align='absmiddle'/>";
         result.name = crs[1];
         return(result);
-    }
-    $.fn.setValue = function(id, option) {
-        if (id == 1) {
-            poolname = 'chr';
-            flootnum = 90;
-            R5num = CR5num;
-            R4num = CR4num;
-        } else if (id == 2) {
-            poolname = 'arm';
-            flootnum = 80;
-            R5num = AR5num;
-            R4num = AR4num;
-        } else if (id == 3) {
-            poolname = 'nov';
-            flootnum = 90;
-            R5num = NR5num;
-            R4num = NR4num;
-        }
-        $("[name='times']").html(gachalog[poolname]['c']);
-        $("[name='spend']").html(gachalog[poolname]['c'] * 160);
-        $("[name='r3num']").html(gachalog[poolname]['c'] - R5num - R4num);
-        $("[name='r3per']").html(((gachalog[poolname]['c'] - R5num - R4num) / gachalog[poolname]['c'] * 100).toFixed(2));
-        $("[name='r4num']").html(R4num);
-        $("[name='r4per']").html((R4num / gachalog[poolname]['c'] * 100).toFixed(2));
-        $("[name='r5num']").html(R5num);
-        $("[name='r5per']").html((R5num / gachalog[poolname]['c'] * 100).toFixed(2));
-        $("[name='floot']").html(flootnum - (gachalog[poolname]['c'] - gachalog[poolname]['r5c']));
-        if (id != 3) {
-            $("[name='up']").css('display', 'block');
-            if (option != "without") {
-                if (htmlSave[poolname] != "") {
-                    $("[name='up']").html = htmlSave[poolname];
-                    return;
-                }
-                rs = askup(poolname);
-                var upr5text = "";
-                var upr4text = "";
-                for (var r5id in rs.upr5) {
-                    if (rs.upr5.length > 1) {
-                        upr5tag = "<input type='radio' id='" + rs.upr5[r5id] + "radio' name='choice' onclick=\"setpool('" + rs.upr5[r5id] + "');\"> ";
-                    } else {
-                        upr5tag = "";
-                    }
-                    upr5text = upr5text + upr5tag + rs.upr5[r5id] + " ";
-                    gachalog[poolname]['upr5'] = rs.upr5;
-                }
-                for (var r4id in rs.upr4) {
-                    upr4text = upr4text + rs.upr4[r4id] + " ";
-                    gachalog[poolname]['upr4'] = rs.upr4;
-                }
-                if (rs.upr5.length > 1) {
-                    if (poolname == 'chr') {
-                        upr5text = "(点击单选框选择角色)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button>";
-                    } else if (poolname == 'arm') {
-                        upr5text = "(点击单选框设置定轨)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button><span id='upr5note' style='display:none;color:#FF0000'><br>警告：撤销或修改定轨后会重置记录!</span>";
-                    }
-                }
-                $("[name='upr5']").html(upr5text);
-                $("[name='upr4']").html(upr4text);
-                if (rs.upr5.length == 0) {
-                    $("[name='upr5']").html("无UP");
-                }
-                if (rs.upr4.length == 0) {
-                    $("[name='upr4']").html("无UP");
-                }
-                if (rs.upr5.length == 1) {
-                    $.fn.choice(rs.upr5[r5id], poolname);
-                }
-            }
-        } else {
-            $("[name='up']").css('display', 'none');
-        }
-    }
-    $.fn.choice = function(name, poolname) {
-        if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
-            gachalog['arm']['c'] = 0;
-            gachalog['arm']['r5c'] = 0;
-            gachalog['arm']['r5times'] = 0;
-            AR5num = 0;
-            AR4num = 0;
-            $("#AAtbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $("#AR5tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $("#AR4tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
-            $.fn.setValue(2, "without");
-        }
-        gachalog[poolname]['choice'] = name;
-        htmlSave[poolname] = $("[name='up']").html;
-        if (name = "") {
-            htmlSave[poolname] = "";
-        }
     }
     function gacha(poolname, times) {
         $('#loading').css('display', 'block');
@@ -406,6 +312,95 @@ $(function() {
             i++;
         }
         $('#loading').css('display', 'none');
+    }
+    $.fn.setValue = function(id, option) {
+        if (id == 1) {
+            poolname = 'chr';
+            flootnum = 90;
+            R5num = CR5num;
+            R4num = CR4num;
+        } else if (id == 2) {
+            poolname = 'arm';
+            flootnum = 80;
+            R5num = AR5num;
+            R4num = AR4num;
+        } else if (id == 3) {
+            poolname = 'nov';
+            flootnum = 90;
+            R5num = NR5num;
+            R4num = NR4num;
+        }
+        $("[name='times']").html(gachalog[poolname]['c']);
+        $("[name='spend']").html(gachalog[poolname]['c'] * 160);
+        $("[name='r3num']").html(gachalog[poolname]['c'] - R5num - R4num);
+        $("[name='r3per']").html(((gachalog[poolname]['c'] - R5num - R4num) / gachalog[poolname]['c'] * 100).toFixed(2));
+        $("[name='r4num']").html(R4num);
+        $("[name='r4per']").html((R4num / gachalog[poolname]['c'] * 100).toFixed(2));
+        $("[name='r5num']").html(R5num);
+        $("[name='r5per']").html((R5num / gachalog[poolname]['c'] * 100).toFixed(2));
+        $("[name='floot']").html(flootnum - (gachalog[poolname]['c'] - gachalog[poolname]['r5c']));
+        if (id != 3) {
+            $("[name='up']").css('display', 'block');
+            if (option != "without") {
+                rs = askup(poolname);
+                var upr5text = "";
+                var upr4text = "";
+                for (var r5id in rs.upr5) {
+                    if (rs.upr5.length > 1) {
+                        upr5tag = "<input type='radio' id='" + rs.upr5[r5id] + "radio' name='choice' onclick=\"setpool('" + rs.upr5[r5id] + "');\"> ";
+                    } else {
+                        upr5tag = "";
+                    }
+                    upr5text = upr5text + upr5tag + rs.upr5[r5id] + " ";
+                    gachalog[poolname]['upr5'] = rs.upr5;
+                }
+                for (var r4id in rs.upr4) {
+                    upr4text = upr4text + rs.upr4[r4id] + " ";
+                    gachalog[poolname]['upr4'] = rs.upr4;
+                }
+                if (rs.upr5.length > 1) {
+                    if (poolname == 'chr') {
+                        upr5text = "(点击单选框选择角色)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button>";
+                    } else if (poolname == 'arm') {
+                        upr5text = "(点击单选框设置定轨)<br>" + upr5text + "<button id='undo' onclick='' style='display:none'>撤销</button><span id='upr5note' style='display:none;color:#FF0000'><br>警告：撤销或修改定轨后会重置记录!</span>";
+                    }
+                }
+                $("[name='upr5']").html(upr5text);
+                $("[name='upr4']").html(upr4text);
+                if (rs.upr5.length > 1 && gachalog[poolname]['choice'] != "") {
+                    if (poolname == 'arm') {
+                        $('#upr5note').css('display', 'inline');
+                    }
+                    $('#' + gachalog[poolname]['choice'] + 'radio').attr('checked', true);
+                    $('#undo').css('display', 'inline');
+                }
+                if (rs.upr5.length == 0) {
+                    $("[name='upr5']").html("无UP");
+                }
+                if (rs.upr4.length == 0) {
+                    $("[name='upr4']").html("无UP");
+                }
+                if (rs.upr5.length == 1) {
+                    $.fn.choice(rs.upr5[r5id], poolname);
+                }
+            }
+        } else {
+            $("[name='up']").css('display', 'none');
+        }
+    }
+    $.fn.choice = function(name, poolname) {
+        if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
+            gachalog['arm']['c'] = 0;
+            gachalog['arm']['r5c'] = 0;
+            gachalog['arm']['r5times'] = 0;
+            AR5num = 0;
+            AR4num = 0;
+            $("#AAtbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR5tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $("#AR4tbMain").after("<tr><td>重置</td><td>重置</td><td style='text-align:center'>重置</td></tr>");
+            $.fn.setValue(2, "without");
+        }
+        gachalog[poolname]['choice'] = name;
     }
     $("button[name=only]").on('click', function() {
         if ($('#loading').css("display") == "block") {
