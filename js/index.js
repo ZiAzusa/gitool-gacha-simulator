@@ -236,7 +236,7 @@ $(function() {
                     crs = items.r4['always'][Math.floor(Math.random() * items.r4['always'].length)];
                 }
             } else {
-                crs = items.r3['always'][Math.floor(Math.random() * items.r4['always'].length)];
+                crs = items.r4['always'][Math.floor(Math.random() * items.r4['always'].length)];
             }
         } else {
             crs = items.r3['always'][Math.floor(Math.random() * items.r3['always'].length)];
