@@ -1,6 +1,5 @@
 # gitool-gacha-simulator
-这是一个使用jQuery做前端调用，PHP做后端处理的原神抽卡模拟器
-#### 建议PHP版本：7.x
+这是一个完全在前端运行的原神抽卡模拟器，使用jQuery开发
 ## 基本使用方法：
 将本仓库clone到您的网站目录下即可开始使用<br>
 items.json文件是设置抽卡内容的文件，您可以查看 [如何使用items.json](#如何使用itemsjson) 来获取详细使用方法
@@ -96,8 +95,11 @@ items.json文件是设置抽卡内容的文件，您可以查看 [如何使用it
 通过解析以下地址的HTML文档获得：<br>
 BiliWiki原神角色筛选：https://wiki.biligame.com/ys/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89<br>
 BiliWiki原神武器图鉴：https://wiki.biligame.com/ys/%E6%AD%A6%E5%99%A8%E5%9B%BE%E9%89%B4
+## 更新记录
+### 2022/4/17
+1.项目完全前端化<br>
+2.修复了武器池可能卡死的Bug
 ## Todo（画饼）
-1.将项目转为纯前端
-2.显示抽到角色/武器的详细信息
+显示抽到角色/武器的详细信息<br>
 ...
 #### Powered by 0803QwQ, Thanks for Your Using.
