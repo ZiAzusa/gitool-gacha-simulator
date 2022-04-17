@@ -1,5 +1,5 @@
 # gitool-gacha-simulator
-这是一个完全在前端运行的原神抽卡模拟器，使用jQuery开发
+这是一个完全在前端运行的原神抽卡模拟器，使用jQuery开发❤️
 ## 基本使用方法：
 将本仓库clone到您的网站目录下即可开始使用<br>
 items.json文件是设置抽卡内容的文件，您可以查看 [如何使用items.json](#如何使用itemsjson) 来获取详细使用方法
