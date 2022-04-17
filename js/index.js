@@ -127,9 +127,8 @@ $(function() {
         gachalog[key]['c'] = 0;
         gachalog[key]['r5c'] = 0;
         gachalog[key]['choice'] = "";
+        gachalog[key]['r5times'] = 0;
     }
-    gachalog['chr']['lastr5'] = "";
-    gachalog['arm']['r5times'] = 0;
     var htmlSave = {};
     htmlSave['chr'] = "";
     htmlSave['arm'] = "";
@@ -165,6 +164,94 @@ $(function() {
         result.upr4 = r4upArr;
         return(result);
     }
+    function action(poolname) {
+        let info = gachalog[poolname];
+        if (poolname == arm) {
+            flootnum = 80;
+            pluscell = 0.0994;
+        } else {
+            flootnum = 90;
+            pluscell = 0.0497;
+        }
+        info['cx'] = info['c'] + 1;
+        count = info['cx'] - info['r5c'];
+        r5per = 0.006;
+        r4per = 0.051;
+        if (count >= 70) {
+            r5per = r5per + (count - 70) * pluscell;
+        }
+        var seed = Math.random();
+        var cseed = Math.random();
+        if (count == 1 && info['r5c'] != 0 && (info['r5c'] % 10) == 0 && seed >= r5per) {
+            seed = 0.05;
+        }
+        if (seed <= r5per || count == flootnum) {
+            if (poolname == 'chr') {
+                if ((cseed <= 0.5 || info['r5times'] == 1) && items.r5['now-chr'] != []) {
+                    if (info['choice'] == "") {
+                        crs = items.r5['now-chr'][Math.floor(Math.random() * items.r5['now-chr'].length)];
+                    } else {
+                        for (var r5nck in items.r5['now-chr']) {
+                            if (items.r5['now-chr'][r5nck][1] == info['choice']) {
+                                crs = items.r5['now-chr'][r5nck];
+                            }
+                        }
+                    }
+                } else {
+                    crs = items.r5['always-chr'][Math.floor(Math.random() * items.r5['always-chr'].length)];
+                }
+            } else if (poolname == 'arm') {
+                if ((cseed <= 0.5 || info['r5times'] == 2) && items.r5['now-arm'] != []) {
+                    if (info['choice'] == "" || info['r5times'] != 2) {
+                        crs = items.r5['now-arm'][Math.floor(Math.random() * items.r5['now-arm'].length)];
+                    } else {
+                        for (var r5nck in items.r5['now-arm']) {
+                            if (items.r5['now-arm'][r5nck][1] == info['choice']) {
+                                crs = items.r5['now-arm'][r5nck];
+                            }
+                        }
+                    }
+                } else {
+                    crs = items.r5['always-arm'][Math.floor(Math.random() * items.r5['always-arm'].length)];
+                }
+            } else {
+                if (cseed <= 0.5) {
+                    crs = items.r5['always-chr'][Math.floor(Math.random() * items.r5['always-chr'].length)];
+                } else {
+                    crs = items.r5['always-arm'][Math.floor(Math.random() * items.r5['always-arm'].length)];
+                }
+            }
+        } else if ((seed > r5per && seed <= (r5per + r4per)) || (info['cx'] % 10) == 0) {
+            if (poolname == 'chr') {
+                if (cseed <= 0.5 && items.r4['now-chr'].length != 0) {
+                    crs = items.r4['now-chr'][Math.floor(Math.random() * items.r4['now-chr'].length)];
+                } else {
+                    crs = items.r4['always'][Math.floor(Math.random() * items.r4['always'].length)];
+                }
+            } else if (poolname == 'arm') {
+                 console.log(items.r4['now-arm']);
+                if (cseed <= 0.5 && items.r4['now-arm'].length != 0) {
+                    crs = items.r4['now-arm'][Math.floor(Math.random() * items.r4['now-arm'].length)];
+                } else {
+                    crs = items.r4['always'][Math.floor(Math.random() * items.r4['always'].length)];
+                }
+            } else {
+                crs = items.r3['always'][Math.floor(Math.random() * items.r4['always'].length)];
+            }
+        } else {
+            crs = items.r3['always'][Math.floor(Math.random() * items.r3['always'].length)];
+        }
+        if (crs.length == 13) {
+            rank = crs[2];
+        } else if (crs.length == 10) {
+            rank = crs[3];
+        }
+        var result = [];
+        result.rank = rank;
+        result.img = "<div><img src=\"" + crs[0] + "\" style='hight:40px;width:40px' align='absmiddle'/>";
+        result.name = crs[1];
+        return(result);
+    }
     $.fn.setValue = function(id, option) {
         if (id == 1) {
             poolname = 'chr';
@@ -195,7 +282,7 @@ $(function() {
             $("[name='up']").css('display', 'block');
             if (option != "without") {
                 if (htmlSave[poolname] != "") {
-                    $("[name='up']") = htmlSave[poolname];
+                    $("[name='up']").html = htmlSave[poolname];
                     return;
                 }
                 rs = askup(poolname);
@@ -205,6 +292,9 @@ $(function() {
                     if (rs.upr5.length > 1) {
                         upr5tag = "<input type='radio' id='" + rs.upr5[r5id] + "radio' name='choice' onclick=\"setpool('" + rs.upr5[r5id] + "');\"> ";
                     } else {
+                        if (poolname == 'chr') {
+                            $.fn.choice(rs.upr5[r5id], "chr");
+                        }
                         upr5tag = "";
                     }
                     upr5text = upr5text + upr5tag + rs.upr5[r5id] + " ";
@@ -223,10 +313,10 @@ $(function() {
                 }
                 $("[name='upr5']").html(upr5text);
                 $("[name='upr4']").html(upr4text);
-                if (rs.upr5 == null) {
+                if (rs.upr5.length == 0) {
                     $("[name='upr5']").html("无UP");
                 }
-                if (rs.upr4 == null) {
+                if (rs.upr4.length == 0) {
                     $("[name='upr4']").html("无UP");
                 }
             }
@@ -252,74 +342,68 @@ $(function() {
             htmlSave[poolname] = "";
         }
     }
-    async function gacha(poolname, times) {
-        var postdata = {};
-        postdata['poolname'] = poolname;
+    function gacha(poolname, times) {
         $('#loading').css('display', 'block');
         i = 1;
         while (i <= times) {
-            postdata['gachalog'] = gachalog;
-            await $.ajax({
-                type: "post",
-                url: "api.php",
-                data: postdata,
-                dataType: 'json',
-                success: function(rs) {
-                    if ($('#chr').css("display") == "block") {
-                        AtbMain = "#CAtbMain";
-                        R5tbMain = "#CR5tbMain";
-                        R4tbMain = "#CR4tbMain";
-                        id = 1;
-                        gachalog['chr']['c'] = gachalog['chr']['c'] + 1;
-                        num = gachalog['chr']['c'];
-                    } else if ($('#arm').css("display") == "block") {
-                        AtbMain = "#AAtbMain";
-                        R5tbMain = "#AR5tbMain";
-                        R4tbMain = "#AR4tbMain";
-                        id = 2;
-                        gachalog['arm']['c'] = gachalog['arm']['c'] + 1;
-                        num = gachalog['arm']['c'];
-                    } else if ($('#nov').css("display") == "block") {
-                        AtbMain = "#NAtbMain";
-                        R5tbMain = "#NR5tbMain";
-                        R4tbMain = "#NR4tbMain";
-                        id = 3;
-                        gachalog['nov']['c'] = gachalog['nov']['c'] + 1;
-                        num = gachalog['nov']['c'];
+            rs = action(poolname);
+            if ($('#chr').css("display") == "block") {
+                AtbMain = "#CAtbMain";
+                R5tbMain = "#CR5tbMain";
+                R4tbMain = "#CR4tbMain";
+                id = 1;
+                gachalog['chr']['c'] = gachalog['chr']['c'] + 1;
+                num = gachalog['chr']['c'];
+            } else if ($('#arm').css("display") == "block") {
+                AtbMain = "#AAtbMain";
+                R5tbMain = "#AR5tbMain";
+                R4tbMain = "#AR4tbMain";
+                id = 2;
+                gachalog['arm']['c'] = gachalog['arm']['c'] + 1;
+                num = gachalog['arm']['c'];
+            } else if ($('#nov').css("display") == "block") {
+                AtbMain = "#NAtbMain";
+                R5tbMain = "#NR5tbMain";
+                R4tbMain = "#NR4tbMain";
+                id = 3;
+                gachalog['nov']['c'] = gachalog['nov']['c'] + 1;
+                num = gachalog['nov']['c'];
+            }
+            $(AtbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
+            if (rs.rank == "5星") {
+                $(R5tbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
+                if ($('#chr').css("display") == "block") {
+                    gachalog['chr']['r5c'] = gachalog['chr']['c'];
+                    if (rs.name == gachalog['chr']['choice'] || gachalog['chr']['choice'] == "") {
+                        gachalog['chr']['r5times'] = 0;
+                    } else {
+                        gachalog['chr']['r5times'] = gachalog['chr']['r5times'] + 1;
                     }
-                    $(AtbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
-                    if (rs.rank == "5星") {
-                        $(R5tbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
-                        if ($('#chr').css("display") == "block") {
-                            gachalog['chr']['r5c'] = gachalog['chr']['c'];
-                            gachalog['chr']['lastr5'] = rs.name;
-                            CR5num = CR5num + 1;
-                        } else if ($('#arm').css("display") == "block") {
-                            gachalog['arm']['r5c'] = gachalog['arm']['c'];
-                            if (rs.name == gachalog['arm']['choice'] || gachalog['arm']['choice'] == "") {
-                                gachalog['arm']['r5times'] = 0;
-                            } else {
-                                gachalog['arm']['r5times'] = gachalog['arm']['r5times'] + 1;
-                            }
-                            AR5num = AR5num + 1;
-                        } else if ($('#nov').css("display") == "block") {
-                            gachalog['nov']['r5c'] = gachalog['nov']['c'];
-                            NR5num = NR5num + 1;
-                        }
-                    } else if (rs.rank == "4星") {
-                        $(R4tbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
-                        if ($('#chr').css("display") == "block") {
-                            CR4num = CR4num + 1;
-                        } else if ($('#arm').css("display") == "block") {
-                            AR4num = AR4num + 1;
-                        } else if ($('#nov').css("display") == "block") {
-                            NR4num = NR4num + 1;
-                        }
+                    CR5num = CR5num + 1;
+                } else if ($('#arm').css("display") == "block") {
+                    gachalog['arm']['r5c'] = gachalog['arm']['c'];
+                    if (rs.name == gachalog['arm']['choice'] || gachalog['arm']['choice'] == "") {
+                        gachalog['arm']['r5times'] = 0;
+                    } else {
+                        gachalog['arm']['r5times'] = gachalog['arm']['r5times'] + 1;
                     }
-                    $.fn.setValue(id, "without");
-                    i++;
+                    AR5num = AR5num + 1;
+                } else if ($('#nov').css("display") == "block") {
+                    gachalog['nov']['r5c'] = gachalog['nov']['c'];
+                    NR5num = NR5num + 1;
                 }
-            });
+            } else if (rs.rank == "4星") {
+                $(R4tbMain).after("<tr><td>" + num + "</td><td>" + rs.rank + "</td><td style='text-align:left'>" + rs.img + " " + rs.name + "</td></tr>");
+                if ($('#chr').css("display") == "block") {
+                    CR4num = CR4num + 1;
+                } else if ($('#arm').css("display") == "block") {
+                    AR4num = AR4num + 1;
+                } else if ($('#nov').css("display") == "block") {
+                    NR4num = NR4num + 1;
+                }
+            }
+            $.fn.setValue(id, "without");
+            i++;
         }
         $('#loading').css('display', 'none');
     }
