@@ -1,6 +1,6 @@
 # gitool-gacha-simulator
 这是一个完全在前端运行的原神抽卡模拟器，使用jQuery开发❤️<hr>
-**项目示例效果 => [GitHub Pages](https://0803qwq.github.io/gitool-gacha-simulator/)**
+**项目示例效果 => [GitHub Pages](https://0803qwq.github.io/gitool-gacha-simulator/)**<hr>
 ## 基本使用方法
 将本仓库clone到您的网站目录下即可开始使用<br>
 items.json文件是设置抽卡内容的文件，您可以查看 [如何使用items.json](#如何使用itemsjson) 来获取详细使用方法
@@ -10,7 +10,7 @@ items.json文件是设置抽卡内容的文件，您可以查看 [如何使用it
 3.已实现多角色UP的情况下切换UP池的方法<br>
 4.已实现武器池80发保底机制和定轨机制（包括定轨重置）<br>
 5.实现了70发之后递增出货概率的平衡机制<hr>
-**总而言之，此项目已尽可能复原原神的抽卡核心机制！**
+**总而言之，此项目已尽可能复原原神的抽卡核心机制！**<hr>
 ## 如何使用items.json
 ### items.json的结构
 ```
