@@ -292,9 +292,6 @@ $(function() {
                     if (rs.upr5.length > 1) {
                         upr5tag = "<input type='radio' id='" + rs.upr5[r5id] + "radio' name='choice' onclick=\"setpool('" + rs.upr5[r5id] + "');\"> ";
                     } else {
-                        if (poolname == 'chr') {
-                            $.fn.choice(rs.upr5[r5id], "chr");
-                        }
                         upr5tag = "";
                     }
                     upr5text = upr5text + upr5tag + rs.upr5[r5id] + " ";
@@ -318,6 +315,9 @@ $(function() {
                 }
                 if (rs.upr4.length == 0) {
                     $("[name='upr4']").html("无UP");
+                }
+                if (rs.upr5.length == 1) {
+                    $.fn.choice(rs.upr5[r5id], poolname);
                 }
             }
         } else {
