@@ -133,14 +133,14 @@ $(function() {
     var htmlSave = {};
     htmlSave['chr'] = "";
     htmlSave['arm'] = "";
+    var itemsdata = $.ajax({
+        type: "get",
+        url: "items.json",
+        async: false,
+        dataType: 'json'
+    });
+    var items = itemsdata.responseJSON;
     function askup(poolname) {
-        let rs = $.ajax({
-            type: "get",
-            url: "items.json",
-            async: false,
-            dataType: 'json'
-        });
-        var items = rs.responseJSON;
         arrayname = "now-" + poolname;
         r5up = items.r5[arrayname];
         var r5upArr = [];
