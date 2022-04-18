@@ -1,6 +1,8 @@
+//获取抽卡数据表格元素
 var chr = document.getElementById("chr");
 var arm = document.getElementById("arm");
 var nov = document.getElementById("nov");
+//切换卡池
 function pool(id) {
     pool1 = document.getElementById("pool1");
     pool2 = document.getElementById("pool2");
@@ -50,6 +52,7 @@ function pool(id) {
     show(showid);
     $().setValue(id, "with");
 }
+//切换显示表格内容
 function show(id) {
     show1 = document.getElementById("show1");
     show2 = document.getElementById("show2");
@@ -90,6 +93,7 @@ function show(id) {
         r5.style.display = "none";
     }
 }
+//设置角色池UP角色或设置武器池定轨
 function setpool(name) {
     undo = document.getElementById("undo");
     if (chr.style.display == "block") {
@@ -101,6 +105,7 @@ function setpool(name) {
     undo.style.display = "inline";
     undo.setAttribute("onclick", "undopool('" + name + "');");
 }
+//撤销角色池UP角色或撤销武器池定轨
 function undopool(name) {
     undo = document.getElementById("undo");
     if (chr.style.display == "block") {
@@ -112,7 +117,9 @@ function undopool(name) {
     undo.style.display = "none";
     document.getElementById(name + "radio").checked = false;
 }
+//jQuery部分
 $(function() {
+    //初始化数据记录全局变量
     var CR5num = 0;
     var CR4num = 0;
     var AR5num = 0;
@@ -129,6 +136,7 @@ $(function() {
         gachalog[key]['choice'] = "";
         gachalog[key]['r5times'] = 0;
     }
+    //获取items.json包含的卡池数据
     var itemsdata = $.ajax({
         type: "get",
         url: "items.json",
@@ -136,6 +144,7 @@ $(function() {
         dataType: 'json'
     });
     var items = itemsdata.responseJSON;
+    //获取UP物品数据
     function askup(poolname) {
         arrayname = "now-" + poolname;
         r5up = items.r5[arrayname];
@@ -161,6 +170,7 @@ $(function() {
         result.upr4 = r4upArr;
         return(result);
     }
+    //核心抽卡模块，包括随机选择和保底
     function action(poolname) {
         let info = gachalog[poolname];
         if (poolname == arm) {
@@ -248,6 +258,7 @@ $(function() {
         result.name = crs[1];
         return(result);
     }
+    //向action()提交具体的抽卡请求，记录抽卡结果的同时，将抽卡结果呈现在用户界面
     function gacha(poolname, times) {
         $('#loading').css('display', 'block');
         i = 1;
@@ -313,6 +324,7 @@ $(function() {
         }
         $('#loading').css('display', 'none');
     }
+    //更新抽卡数据（通过$().setValue提供原生JS调用）
     $.fn.setValue = function(id, option) {
         if (id == 1) {
             poolname = 'chr';
@@ -341,6 +353,7 @@ $(function() {
         $("[name='floot']").html(flootnum - (gachalog[poolname]['c'] - gachalog[poolname]['r5c']));
         if (id != 3) {
             $("[name='up']").css('display', 'block');
+            //可选，是否刷新UP物品数据
             if (option != "without") {
                 rs = askup(poolname);
                 var upr5text = "";
@@ -381,13 +394,14 @@ $(function() {
                     $("[name='upr4']").html("无UP");
                 }
                 if (rs.upr5.length == 1) {
-                    $.fn.choice(rs.upr5[r5id], poolname);
+                    $.fn.choice(rs.upr5[0], poolname);
                 }
             }
         } else {
             $("[name='up']").css('display', 'none');
         }
     }
+    //存储设置的UP角色或武器定轨到全局变量（通过$().choice供原生JS调用）
     $.fn.choice = function(name, poolname) {
         if (poolname == 'arm' && gachalog['arm']['choice'] != "") {
             gachalog['arm']['c'] = 0;
@@ -402,6 +416,7 @@ $(function() {
         }
         gachalog[poolname]['choice'] = name;
     }
+    //单抽
     $("button[name=only]").on('click', function() {
         if ($('#loading').css("display") == "block") {
             return;
@@ -414,10 +429,11 @@ $(function() {
         }
         gacha(poolname, 1);
     });
+    //十连
     $("button[name=ten]").on('click', function() {
         if ($('#loading').css("display") == "block") {
             return;
-        }else if ($('#chr').css("display") == "block") {
+        } else if ($('#chr').css("display") == "block") {
             poolname = 'chr';
         } else if ($('#arm').css("display") == "block") {
             poolname = 'arm';
