@@ -1,4 +1,4 @@
-# gitool-gacha-simulator
+# GITool原神抽卡模拟器
 这是一个完全在前端运行的原神抽卡模拟器，使用jQuery开发❤️<hr>
 **项目示例效果 => [GitHub Pages](https://0803qwq.github.io/gitool-gacha-simulator/)**<hr>
 ## 基本使用方法
