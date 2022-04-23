@@ -116,7 +116,7 @@ items.json文件是设置抽卡内容的文件，您可以查看 [如何使用it
     "西风之鹰的抗争：攻击力提高20%\/25%\/30%\/35%\/40%；受到伤害时触发：高扬抗争旗号的西风鹰之魂苏醒，恢复同等与攻击力的100%\/115%\/130%\/145%\/160%生命值，并对周围的敌人造成200%\/230%\/260%\/290%\/320%攻击力的伤害。该效果每15秒只能触发一次。"
 ]
 ```
-注：您可以直接从 [限定五星数据一览.txt](https://github.com/0803QwQ/gitool-gacha-simulator/blob/main/限定五星数据一览.txt) 和 [限定四星武器数据一览.txt](https://github.com/0803QwQ/gitool-gacha-simulator/blob/main/限定四星武器数据一览.txt) 复制所需五星物品的部分到items.json的相应位置来使用
+注：您可以直接从 [限定五星数据一览.txt](https://github.com/0803QwQ/gitool-gacha-simulator/blob/main/限定五星数据一览.txt) 和 [限定四星武器数据一览.txt](https://github.com/0803QwQ/gitool-gacha-simulator/blob/main/限定四星武器数据一览.txt) 复制所需限定物品的部分到items.json的相应位置来使用
 ### items.json的数据来源
 通过解析以下地址的HTML文档获得：<br>
 BiliWiki原神角色筛选：https://wiki.biligame.com/ys/%E8%A7%92%E8%89%B2%E7%AD%9B%E9%80%89<br>
